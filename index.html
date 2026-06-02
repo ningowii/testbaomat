@@ -14,6 +14,7 @@
         }
 
         body {
+            /* Chống bôi đen text */
             -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
             margin: 0; padding: 0;
             background-color: var(--bg-color); color: var(--text-color);
@@ -37,12 +38,12 @@
         .auth-box input { width: 85%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
         .auth-box button { padding: 12px 30px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;}
 
-        /* Khung Panel tạo pass của ADMIN */
+        /* Khung Panel tạo pass của ADMIN (Mặc định ẩn hoàn toàn) */
         .admin-panel {
             display: none; background: #2c3e50; color: white; padding: 25px; border-radius: 8px;
             margin-top: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .admin-panel input, .admin-panel select { width: 90%; padding: 10px; margin: 8px 0; border-radius: 4px; border: none; font-size: 15px;}
+        .admin-panel input, .admin-panel select { width: 90%; padding: 10px; margin: 8px 0; border-radius: 4px; border: none; font-size: 15px; color: #000 !important;}
         .admin-panel button { width: 94%; padding: 12px; background: #e74c3c; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px;}
         .result-box { background: #34495e; padding: 15px; margin-top: 15px; border-radius: 4px; border-left: 5px solid #2ecc71; word-break: break-all;}
 
@@ -64,14 +65,12 @@
         .watermark-item { padding: 60px 10px; text-align: center; }
         
         .loading { display: none; color: #e67e22; font-weight: bold; margin-top: 10px; }
-        .admin-btn-toggle { background: transparent; border: none; color: #95a5a6; cursor: pointer; font-size: 13px; display: block; margin: 40px auto 10px auto; text-decoration: underline;}
     </style>
 </head>
-<body oncontextmenu="return false;" onkeydown="return false;">
+<body oncontextmenu="return false;">
 
 <div class="container">
 
-    <!-- TOOLBAR ĐIỀU CHỈNH GIAO DIỆN -->
     <div class="toolbar">
         <button onclick="window.location.reload()">🏠 Làm Mới</button>
         <div>
@@ -90,7 +89,6 @@
         </div>
     </div>
 
-    <!-- KHUNG ĐĂNG NHẬP DÀNH CHO ĐỘC GIẢ -->
     <div id="authBox" class="auth-box">
         <h3 id="labelChuong">NHẬP THÔNG TIN ĐỂ VÀO ĐỌC TRUYỆN</h3>
         <input type="text" id="taiKhoan" placeholder="Tên tài khoản của bạn (Ví dụ: toithichgayvl)">
@@ -100,7 +98,6 @@
         <div id="loadingText" class="loading">Đang liên kết dữ liệu đám mây bảo mật...</div>
     </div>
 
-    <!-- KHUNG HIỂN THỊ NỘI DUNG TRUYỆN -->
     <div id="contentBox" class="content-box">
         <div id="storyTitle" class="story-title"></div>
         <hr>
@@ -108,14 +105,10 @@
         <div id="watermarkLayer" class="watermark-overlay"></div>
     </div>
 
-    <!-- NÚT ẤN ĐỂ BẬT PANEL CỦA BẠN (ADMIN) -->
-    <button class="admin-btn-toggle" onclick="toggleAdminPanel()">⚙️ Khu Vực Quản Trị (Chỉ Dành Cho Bạn)</button>
-
-    <!-- KHUNG TẠO MẬT MÃ NGẪU NHIÊN CỦA ADMIN -->
     <div id="adminPanel" class="admin-panel">
-        <h3>BỘ TẠO PASS ĐỌC TRUYỆN NGẪU NHIÊN</h3>
+        <h3 style="color: #e74c3c; text-align: center;">BỘ TẠO PASS ĐỌC TRUYỆN (MẬT VỤ)</h3>
         <label>1. Nhập tên tài khoản của người xin:</label>
-        <input type="text" id="adminInputUser" placeholder="Nhập tên ví dụ: toithichgayvl">
+        <input type="text" id="adminInputUser" placeholder="Ví dụ: toithichgayvl">
         
         <label>2. Chọn chương muốn cấp quyền đọc:</label>
         <select id="adminSelectChuong">
@@ -127,15 +120,14 @@
         <button onclick="adminYeuCauTaoPass()">BẤM TẠO VÀ LƯU PASS ONLINE</button>
         <div id="adminLoading" class="loading" style="color: #2ecc71;">Đang khởi tạo mã hóa...</div>
         
-        <!-- Kết quả xuất ra để bạn copy -->
         <div id="adminResult" class="result-box" style="display: none;"></div>
     </div>
 
 </div>
 
 <script>
-    // ⚠️ DÁN ĐƯỜNG LINK WEB APP APPS SCRIPT CỦA BẠN VÀO ĐÂY
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7pOD1z0VbLD0ffz27Eg1BegaAbEE-7pLpXOds-ZzA_YLJu0qQ1itthZ-cDl8-BjApsQ/exec";
+    // ⚠️ ĐỔI THÀNH LINK WEB APP APPS SCRIPT CỦA BẠN
+    const SCRIPT_URL = "DÁN_LINK_WEB_APP_APPS_SCRIPT_VÀO_ĐÂY";
 
     let currentFontSize = 18;
     let isDarkMode = false;
@@ -162,13 +154,8 @@
         document.getElementById("passCode").value = "";
     }
 
-    function toggleAdminPanel() {
-        const panel = document.getElementById("adminPanel");
-        panel.style.display = panel.style.display === "block" ? "none" : "block";
-    }
-
     // ==========================================
-    // CHỨC NĂNG CỦA ADMIN: GỬI LỆNH TẠO PASS LÊN SHEET
+    // CHỨC NĂNG ADMIN: TẠO PASS
     // ==========================================
     function adminYeuCauTaoPass() {
         const userIn = document.getElementById("adminInputUser").value.trim();
@@ -176,15 +163,10 @@
         const resBox = document.getElementById("adminResult");
 
         if(!userIn) { alert("Hãy nhập tên tài khoản khách!"); return; }
-
         document.getElementById("adminLoading").style.display = "block";
         resBox.style.display = "none";
 
-        const payload = {
-            action: "admin_create_pass",
-            taiKhoan: userIn,
-            idChuong: chuongIn
-        };
+        const payload = { action: "admin_create_pass", taiKhoan: userIn, idChuong: chuongIn };
 
         fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
         .then(res => res.json())
@@ -195,20 +177,19 @@
                 resBox.innerHTML = `
                     <strong>TẠO THÀNH CÔNG! HÃY COPY GỬI CHO KHÁCH:</strong><br><br>
                     • Tài khoản: <span style="color:#f1c40f">${res.taiKhoan}</span><br>
-                    • Mật mã truy cập: <span style="color:#2ecc71; font-size:18px; font-weight:bold;">${res.pass}</span><br>
-                    • Áp dụng cho: <span>${res.idChuong.toUpperCase()}</span><br>
-                    • Hạn sử dụng: <strong>15 phút (Sau 15p dữ liệu tự hủy)</strong>
+                    • Mật mã: <span style="color:#2ecc71; font-size:18px; font-weight:bold;">${res.pass}</span><br>
+                    • Hạn dùng: 15 phút
                 `;
             } else { alert("Lỗi: " + res.message); }
         })
         .catch(err => {
             document.getElementById("adminLoading").style.display = "none";
-            alert("Lỗi kết nối Server Admin.");
+            alert("Lỗi kết nối Server.");
         });
     }
 
     // ==========================================
-    // CHỨC NĂNG CỦA NGƯỜI ĐỌC: KIỂM TRA PASS & LẤY TRUYỆN
+    // CHỨC NĂNG ĐỘC GIẢ: ĐĂNG NHẬP ĐỌC
     // ==========================================
     function yeuCauDocTruyen() {
         const tk = document.getElementById("taiKhoan").value.trim();
@@ -229,16 +210,12 @@
                 document.getElementById("contentBox").style.display = "block";
                 document.getElementById("storyTitle").innerText = result.title;
                 document.getElementById("storyText").innerText = result.content;
-                
-                // Kích hoạt chèn Watermark mang tên tài khoản đó để chống chụp ảnh màn hình
                 taoWatermarkDong(tk);
-            } else {
-                alert("Lỗi truy cập: " + result.message);
-            }
+            } else { alert("Lỗi truy cập: " + result.message); }
         })
         .catch(err => {
             document.getElementById("loadingText").style.display = "none";
-            alert("Không thể kết nối đến máy chủ truyện.");
+            alert("Không thể kết nối máy chủ.");
         });
     }
 
@@ -253,10 +230,30 @@
         }
     }
 
-    // BẢO MẬT: CHẶN F12, CHUỘT PHẢI, CTRL+C, CTRL+U, CTRL+S
+    // ==========================================
+    // HỆ THỐNG KIỂM SOÁT PHÍM BẢO MẬT (ĐÃ SỬA LỖI CHẶN CHỮ)
+    // ==========================================
     window.addEventListener('keydown', function(e) {
+        
+        // 1. CƠ CHẾ KÍCH HOẠT PANEL ADMIN BÍ MẬT: Bấm tổ hợp Ctrl + Shift + Alt + A
+        if (e.ctrlKey && e.shiftKey && e.altKey && e.keyCode == 65) { 
+            e.preventDefault();
+            const panel = document.getElementById("adminPanel");
+            panel.style.display = panel.style.display === "block" ? "none" : "block";
+            return false;
+        }
+
+        // 2. SỬA LỖI: Nếu đang gõ chữ trong các ô Input/Select thì KHÔNG chặn phím
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+            return true; 
+        }
+
+        // 3. CHẶN PHÍM BẢO MẬT KHI KHÁCH ĐANG Ở KHUNG ĐỌC TRUYỆN
+        // Chặn F12
         if (e.keyCode == 123) { e.preventDefault(); return false; }
+        // Chặn Ctrl+Shift+I, C, J (Mở công cụ F12)
         if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) { e.preventDefault(); return false; }
+        // Chặn Ctrl+U (Xem mã nguồn), Ctrl+S (Tải trang), Ctrl+C (Copy), Ctrl+A (Quét hết)
         if (e.ctrlKey && (e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 67 || e.keyCode == 65)) { e.preventDefault(); return false; }
     }, false);
 </script>
